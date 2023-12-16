@@ -2,11 +2,18 @@
 
 namespace App\Exceptions;
 
+use App\Traits\ApiResponser;
+use Error;
+use ErrorException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
-use Throwable;
+use LogicException;
+use RuntimeException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+
 
 class Handler extends ExceptionHandler
 {
+    use ApiResponser;
     /**
      * The list of the inputs that are never flashed to the session on validation exceptions.
      *
@@ -23,8 +30,20 @@ class Handler extends ExceptionHandler
      */
     public function register(): void
     {
-        $this->reportable(function (Throwable $e) {
-            //
+        $this->renderable(function (NotFoundHttpException $e) {
+            return $this->errorResponse($e->getMessage(), 404);
+        });
+        $this->renderable(function (LogicException $e) {
+            return $this->errorResponse($e->getMessage(), 500);
+        });
+        $this->renderable(function (ErrorException $e) {
+            return $this->errorResponse($e->getMessage(), 500);
+        });
+        $this->renderable(function (RuntimeException $e) {
+            return $this->errorResponse($e->getMessage(), 500);
+        });
+        $this->renderable(function (Error $e) {
+            return $this->errorResponse($e->getMessage(), 500);
         });
     }
 }
