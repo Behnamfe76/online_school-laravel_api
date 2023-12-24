@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\V1\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
+use App\Http\Resources\UserResource;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -25,15 +26,27 @@ class AuthenticatedSessionController extends Controller
         $token = $user->createToken('apiToken')->accessToken;
 
         return $this->successResponse([
-            'user'=>$user,
+            'user'=> new UserResource($user),
             'token'=> $token,
         ], 'logged in successfully', 200);
     }
 
+
+
     /**
      * Destroy an authenticated session.
      */
-    public function logout(Request $request): Response
+    public function isLogin(){
+        $user = auth()->user();
+
+        return $this->successResponse((new UserResource($user)), 'user authorized', 200);
+    }
+
+
+    /**
+     * Destroy an authenticated session.
+     */
+    public function logout(Request $request)
     {
         auth()->user()->tokens()->delete();
 
@@ -41,6 +54,6 @@ class AuthenticatedSessionController extends Controller
 
         // $request->session()->regenerateToken();
 
-        return response()->noContent();
+        return $this->successResponse(null, 'logged out successfully', 200);
     }
 }

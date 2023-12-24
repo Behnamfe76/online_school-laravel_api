@@ -24,6 +24,7 @@ Route::prefix('/v1/authentication/')->group(function () {
     Route::post('/register', [RegisteredUserController::class, 'store']);
     Route::post('/login', [AuthenticatedSessionController::class, 'login']);
     Route::post('/logout', [AuthenticatedSessionController::class, 'logout'])->middleware('auth:api');
+    Route::post('/is-login', [AuthenticatedSessionController::class, 'isLogin'])->middleware('auth:api');
     Route::post('/email/verification-notification', [EmailVerificationNotificationController::class, 'store'])
         ->middleware('auth:api');
     Route::get('email/verify-email/{id}/{hash}', VerifyEmailController::class)

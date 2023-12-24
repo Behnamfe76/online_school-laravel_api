@@ -33,10 +33,7 @@ class RegisteredUserController extends Controller
         event(new Registered($user));
 
 
-        $token = $user->createToken('myApp')->accessToken;
-        return $this->successResponse([
-            'user' => $user,
-            'token' => $token
-        ], 'user created successfully', 201);
+        // $token = $user->createToken('myApp')->accessToken;
+        return $this->successResponse(null, 'user created successfully', 201);
     }
 }
